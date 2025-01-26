@@ -187,4 +187,4 @@ class ContentAnotherMVG extends HTMLElement {
   }
 }
 
-customElements.define("content-card-another-mvg", ContentAnotherMVG);
+customElements.define("content-card-another-mvg-minimal", ContentAnotherMVG);
