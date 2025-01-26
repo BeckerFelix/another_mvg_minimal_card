@@ -22,15 +22,6 @@ class ContentAnotherMVG extends HTMLElement {
           border-collapse: collapse;
         }
 
-        /* Table Header - Linie, Ziel, Abfahrt */
-        .amvg-headline {
-          font-weight: bold;
-          background-color: #FAE10C;
-          color: #000080;
-          border-width: 0;
-          text-align: left;
-        }
-
         /* Column widths and spacing */
         .label {
           width: 10%;
@@ -143,11 +134,6 @@ class ContentAnotherMVG extends HTMLElement {
       <div>
         ${!state.attributes.config.hide_name ? `<div class="amvg-cardname">${state.attributes.config.name}${state.attributes.dataOutdated !== undefined ? ` ${state.attributes.dataOutdated}` : " (loading)"}<span class="currentTime" style="float: right; margin-right: 5px;">${state.attributes.config.show_clock ? ` ${getCurrentTime()} ` : ""}</span></div>` : ""}
         <table class="amvg-table">
-          <tr class="amvg-headline">
-            <th class="label">Linie</th>
-            <th class="destination">Ziel</th>
-            <th class="time">Abfahrt</th>
-          </tr>
         `;
 
       this.data = state.attributes.departures;
