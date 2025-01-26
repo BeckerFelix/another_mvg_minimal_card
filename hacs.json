@@ -1,7 +1,7 @@
 {
-  "name": "Another MVG",
+  "name": "Another MVG Minimal",
   "description": "Home Assistant addon for MVG integration with frontend resources.",
-  "url": "https://github.com/Nisbo/another_mvg",
+  "url": "https://github.com/BeckerFelix/another_mvg_minimal_card",
   "file_name": "",
   "domains": ["sensor"],
   "homeassistant": "2023.8.0",
