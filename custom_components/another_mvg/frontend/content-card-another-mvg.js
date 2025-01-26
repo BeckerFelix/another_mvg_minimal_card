@@ -9,23 +9,17 @@ class ContentAnotherMVG extends HTMLElement {
       const style   = document.createElement('style');
 
       style.textContent = `
-
-        /* Card background */
-        .amvg-container {
-          border-radius: var(--ha-card-border-radius,12px);
-          padding-bottom: 5px;
-        }
         /* Name of the card - from name parameter */
         .amvg-cardname {
           font-weight: bold;
-          font-size:1.0em;
+          font-size: 1.0em;
           padding: 2px 0 2px 8px;
           color: #FFFFFF;
         }
         /* Table */
         .amvg-table {
           width: 100%;
-          border-collapse:collapse;
+          border-collapse: collapse;
         }
 
         /* Table Header - Linie, Ziel, Abfahrt */
@@ -53,19 +47,6 @@ class ContentAnotherMVG extends HTMLElement {
           white-space: nowrap;
           color: #FFFFFF;
         }
-        .labelHL {
-          width: 10%;
-          padding: 0 6px;
-        }
-        .destinationHL {
-          width: 70%;
-          text-wrap: wrap;
-        }
-        .timeHL {
-          padding-right: 5px;
-          width: fit-content;
-          white-space: nowrap;
-        }
 
         .cancelled {
           color: red;
@@ -79,11 +60,10 @@ class ContentAnotherMVG extends HTMLElement {
           font-weight: bold;
           color: #FFFFFF;
           background-color: #000000;
-          border: 1px solid #FFFFFF;
-          font-size:0.9em;
-          margin-right:0.5em;
-          margin-left:0.1em;
-          display: block;
+          font-size: 0.9em;
+          margin-right: 0.5em;
+          margin-left: 0.1em;
+          display: inline-block;
           text-align: center;
           width: 35px;
           margin: 2px 0;
@@ -103,13 +83,13 @@ class ContentAnotherMVG extends HTMLElement {
         span.BAHN {
           background-color: #FFFFFF;
           color: #E30613;
-          border: 1px solid #E30613;
+          border: none;
         }
 
         /* SBAHN */
         span.SBAHN {
-          border-radius:1000px;
-          border: 1px solid #FFFFFF;
+          border-radius: 1000px;
+          border: none;
         }
         span.S1  {background-color: #16BAE7;}
         span.S2  {background-color: #76B82A;}
@@ -125,7 +105,7 @@ class ContentAnotherMVG extends HTMLElement {
         span.TRAM {background-color: #D82020;}
 
         /* UBAHN */
-        span.UBAHN {/* special formating for general UBAHN - place holder */}
+        span.UBAHN {}
         span.U1 {background-color: #438136;}
         span.U2 {background-color: #C40C37;}
         span.U3 {background-color: #F36E31;}
@@ -134,7 +114,6 @@ class ContentAnotherMVG extends HTMLElement {
         span.U6 {background-color: #006CB3;}
         span.U7 {background: linear-gradient(322deg, #C40C37 50%, #438136 50%);}
         span.U8 {background: linear-gradient(322deg, #F36E31 50%, #C40C37 50%);}
-
         `;
       card.appendChild(style);
       card.appendChild(this.content);
@@ -144,16 +123,15 @@ class ContentAnotherMVG extends HTMLElement {
     const entityId = this.config.entity;
     const state    = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
-    const departureFormat = state && state.attributes && state.attributes.config &&
-    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "")
-    ? state.attributes.config.departure_format
+    const departureFormat = state && state.attributes && state.attributes.config && 
+    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "") 
+    ? state.attributes.config.departure_format 
     : "1";
-
 
     /* state undefined */
     if (!state || state === "undefined") {
-      var html = "<b><u>Another MVG:</u></b><br>The entity <b>" + entityId + "</b> is undefined!<br>Maybe only a typo ?<br>Or did you delete the stop ?";
-      this.content.innerHTML = html;
+       var html = "<b><u>Another MVG:</u></b><br>The entity <b>" + entityId + "</b> is undefined!<br>Maybe only a typo ?<br>Or did you delete the stop ?";
+       this.content.innerHTML = html;
     } else {
       // Function, to show the current time
       function getCurrentTime() {
@@ -162,23 +140,23 @@ class ContentAnotherMVG extends HTMLElement {
       }
 
       let html = `
-      <div class="amvg-container">
+      <div>
         ${!state.attributes.config.hide_name ? `<div class="amvg-cardname">${state.attributes.config.name}${state.attributes.dataOutdated !== undefined ? ` ${state.attributes.dataOutdated}` : " (loading)"}<span class="currentTime" style="float: right; margin-right: 5px;">${state.attributes.config.show_clock ? ` ${getCurrentTime()} ` : ""}</span></div>` : ""}
         <table class="amvg-table">
           <tr class="amvg-headline">
-            <th class="labelHL">Linie</th>
-            <th class="destinationHL">Ziel</th>
-            <th class="timeHL">Abfahrt</th>
+            <th class="label">Linie</th>
+            <th class="destination">Ziel</th>
+            <th class="time">Abfahrt</th>
           </tr>
         `;
 
       this.data = state.attributes.departures;
       if (!this.data || this.data === "undefined") {
-        html += `<tr class="item">`;
-        html += `<td class="label">XX</td>`;
-        html += `<td class="destination">Addon is loading.</td>`;
-        html += `<td class="time">-</td>`;
-        html += `</tr>`;
+            html += `<tr class="item">`;
+            html += `<td class="label">XX</td>`;
+            html += `<td class="destination">Addon is loading.</td>`;
+            html += `<td class="time">-</td>`;
+            html += `</tr>`;
       } else {
         this.data.forEach((departure) => {
           html += `<tr class="item">`;
@@ -187,33 +165,13 @@ class ContentAnotherMVG extends HTMLElement {
 
           let timeDisplay = "";
 
-          if (departureFormat === "1") {
-            timeDisplay = departure.planned_departure;
-
+          if (departureFormat === "1" || departureFormat === "2" || departureFormat === "3") {
             if (departure.cancelled) {
-              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
+              timeDisplay = `<span class="cancelled">Entfällt</span>`;
             } else if (departure.delay > 0) {
-              timeDisplay += ` <span class="delay">+${departure.delay}</span> (${departure.expected_departure})`;
-            }
-
-          } else if (departureFormat === "2") {
-            timeDisplay = departure.planned_departure;
-
-            if (departure.cancelled) {
-              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
-            } else if (departure.delay > 0) {
-              timeDisplay += ` <span class="delay">+${departure.delay}</span>`;
-            }
-
-          } else if (departureFormat === "3") {
-            if (departure.delay > 0) {
               timeDisplay = `<span class="delay">${departure.expected_departure}</span>`;
             } else {
               timeDisplay = departure.expected_departure;
-            }
-
-            if (departure.cancelled) {
-              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
             }
           }
 
@@ -222,7 +180,7 @@ class ContentAnotherMVG extends HTMLElement {
         });
       }
 
-      html += `</table></div>`;
+      html += `</table></div>`; 
       this.content.innerHTML = html;
     }
   }
@@ -243,4 +201,4 @@ class ContentAnotherMVG extends HTMLElement {
   }
 }
 
-customElements.define("content-card-another-mvg-minimal", ContentAnotherMVG);
+customElements.define("content-card-another-mvg", ContentAnotherMVG);
