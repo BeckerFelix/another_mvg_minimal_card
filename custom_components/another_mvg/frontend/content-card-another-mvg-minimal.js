@@ -14,7 +14,7 @@ class ContentAnotherMVG extends HTMLElement {
           font-weight: bold;
           font-size: 1.0em;
           padding: 2px 0 2px 8px;
-          color: #FFFFFF;
+          color: #000000;
         }
         /* Table */
         .amvg-table {
@@ -26,17 +26,18 @@ class ContentAnotherMVG extends HTMLElement {
         .label {
           width: 10%;
           padding: 0 6px;
+          color: #000000;
         }
         .destination {
           width: 70%;
           text-wrap: wrap;
-          color: #FFFFFF;
+          color: #000000;
         }
         .time {
           padding-right: 5px;
           width: fit-content;
           white-space: nowrap;
-          color: #FFFFFF;
+          color: #000000;
         }
 
         .cancelled {
@@ -114,9 +115,9 @@ class ContentAnotherMVG extends HTMLElement {
     const entityId = this.config.entity;
     const state    = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
-    const departureFormat = state && state.attributes && state.attributes.config && 
-    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "") 
-    ? state.attributes.config.departure_format 
+    const departureFormat = state && state.attributes && state.attributes.config &&
+    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "")
+    ? state.attributes.config.departure_format
     : "1";
 
     /* state undefined */
