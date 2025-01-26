@@ -12,7 +12,6 @@ class ContentAnotherMVG extends HTMLElement {
 
         /* Card background */
         .amvg-container {
-          background-color: #000080;
           border-radius: var(--ha-card-border-radius,12px);
           padding-bottom: 5px;
         }
@@ -29,7 +28,7 @@ class ContentAnotherMVG extends HTMLElement {
           border-collapse:collapse;
         }
 
-        /* Table Header - Linie, Ziel, Gleis, Abfahrt */
+        /* Table Header - Linie, Ziel, Abfahrt */
         .amvg-headline {
           font-weight: bold;
           background-color: #FAE10C;
@@ -44,13 +43,8 @@ class ContentAnotherMVG extends HTMLElement {
           padding: 0 6px;
         }
         .destination {
-          width: 60%;
+          width: 70%;
           text-wrap: wrap;
-          color: #FFFFFF;
-        }
-        .track {
-          padding: 0 5px;
-          width: fit-content;
           color: #FFFFFF;
         }
         .time {
@@ -64,12 +58,8 @@ class ContentAnotherMVG extends HTMLElement {
           padding: 0 6px;
         }
         .destinationHL {
-          width: 60%;
+          width: 70%;
           text-wrap: wrap;
-        }
-        .trackHL {
-          padding: 0 5px;
-          width: fit-content;
         }
         .timeHL {
           padding-right: 5px;
@@ -112,8 +102,8 @@ class ContentAnotherMVG extends HTMLElement {
         /* BAHN */
         span.BAHN {
           background-color: #FFFFFF;
-		  color: #E30613;
-		  border: 1px solid #E30613;
+          color: #E30613;
+          border: 1px solid #E30613;
         }
 
         /* SBAHN */
@@ -125,7 +115,7 @@ class ContentAnotherMVG extends HTMLElement {
         span.S2  {background-color: #76B82A;}
         span.S3  {background-color: #951B81;}
         span.S4  {background-color: #E30613;}
-		span.S5  {background-color: #005E82;}
+        span.S5  {background-color: #005E82;}
         span.S6  {background-color: #00975F;}
         span.S7  {background-color: #943126;}
         span.S8  {background-color: #000000; color: #FFFFFF;}
@@ -145,7 +135,7 @@ class ContentAnotherMVG extends HTMLElement {
         span.U7 {background: linear-gradient(322deg, #C40C37 50%, #438136 50%);}
         span.U8 {background: linear-gradient(322deg, #F36E31 50%, #C40C37 50%);}
 
-        `
+        `;
       card.appendChild(style);
       card.appendChild(this.content);
       this.appendChild(card);
@@ -154,91 +144,87 @@ class ContentAnotherMVG extends HTMLElement {
     const entityId = this.config.entity;
     const state    = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
-	const departureFormat = state && state.attributes && state.attributes.config && 
-    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "") 
-    ? state.attributes.config.departure_format 
+    const departureFormat = state && state.attributes && state.attributes.config &&
+    ["1", "2", "3"].includes(state.attributes.config.departure_format ?? "")
+    ? state.attributes.config.departure_format
     : "1";
 
 
     /* state undefined */
     if (!state || state === "undefined") {
-	   var html = "<b><u>Another MVG:</u></b><br>The entity <b>" + entityId + "</b> is undefined!<br>Maybe only a typo ?<br>Or did you delete the stop ?";
-	   this.content.innerHTML = html;
+      var html = "<b><u>Another MVG:</u></b><br>The entity <b>" + entityId + "</b> is undefined!<br>Maybe only a typo ?<br>Or did you delete the stop ?";
+      this.content.innerHTML = html;
     } else {
-		// Function, to show the current time
-		function getCurrentTime() {
-			const now = new Date();
-			return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-			//return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }); // only for testing, there is no update every second
-		}
+      // Function, to show the current time
+      function getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
 
-		let html = `
-		<div class="amvg-container">
-		  ${!state.attributes.config.hide_name ? `<div class="amvg-cardname">${state.attributes.config.name}${state.attributes.dataOutdated !== undefined ? ` ${state.attributes.dataOutdated}` : " (loading)"}<span class="currentTime" style="float: right; margin-right: 5px;">${state.attributes.config.show_clock ? ` ${getCurrentTime()} ` : ""}</span></div>` : ""}
-		  <table class="amvg-table">
-			<tr class="amvg-headline">
-			  <th class="labelHL">Linie</th>
-			  <th class="destinationHL">Ziel</th>
-			  <th class="trackHL">Gleis</th>
-			  <th class="timeHL">Abfahrt</th>
-			</tr>
-		  `;
+      let html = `
+      <div class="amvg-container">
+        ${!state.attributes.config.hide_name ? `<div class="amvg-cardname">${state.attributes.config.name}${state.attributes.dataOutdated !== undefined ? ` ${state.attributes.dataOutdated}` : " (loading)"}<span class="currentTime" style="float: right; margin-right: 5px;">${state.attributes.config.show_clock ? ` ${getCurrentTime()} ` : ""}</span></div>` : ""}
+        <table class="amvg-table">
+          <tr class="amvg-headline">
+            <th class="labelHL">Linie</th>
+            <th class="destinationHL">Ziel</th>
+            <th class="timeHL">Abfahrt</th>
+          </tr>
+        `;
 
-		this.data = state.attributes.departures;
-		if (!this.data || this.data === "undefined") {
-			  html += `<tr class="item">`;
-			  html += `<td class="label">XX</td>`;
-			  html += `<td class="destination">Addon is loading.</td>`;
-			  html += `<td class="track">-</td>`;
-			  html += `<td class="time">-</td>`;
-			  html += `</tr>`;
-		} else {
-			this.data.forEach((departure) => {
-			  html += `<tr class="item">`;
-			  html += `<td class="label"><span class="line ${departure.transport_type} ${departure.label}">${departure.label}</span></td>`;
-			  html += `<td class="destination">${departure.destination}</td>`;
-			  html += `<td class="track">${departure.track}</td>`;
-			  
-			  let timeDisplay = "";
-			  
-			  if (departureFormat === "1") {
-				timeDisplay = departure.planned_departure;
+      this.data = state.attributes.departures;
+      if (!this.data || this.data === "undefined") {
+        html += `<tr class="item">`;
+        html += `<td class="label">XX</td>`;
+        html += `<td class="destination">Addon is loading.</td>`;
+        html += `<td class="time">-</td>`;
+        html += `</tr>`;
+      } else {
+        this.data.forEach((departure) => {
+          html += `<tr class="item">`;
+          html += `<td class="label"><span class="line ${departure.transport_type} ${departure.label}">${departure.label}</span></td>`;
+          html += `<td class="destination">${departure.destination}</td>`;
 
-				if (departure.cancelled) {
-				  timeDisplay += ` <span class="cancelled">Entfällt</span>`;
-				} else if (departure.delay > 0) {
-				  timeDisplay += ` <span class="delay">+${departure.delay}</span> (${departure.expected_departure})`;
-				}
-				
-			  } else if (departureFormat === "2") {
-				timeDisplay = departure.planned_departure;
+          let timeDisplay = "";
 
-				if (departure.cancelled) {
-				  timeDisplay += ` <span class="cancelled">Entfällt</span>`;
-				} else if (departure.delay > 0) {
-				  timeDisplay += ` <span class="delay">+${departure.delay}</span>`;
-				}
-				
-			  } else if (departureFormat === "3") {
-				if (departure.delay > 0) {
-				  timeDisplay = `<span class="delay">${departure.expected_departure}</span>`;
-				} else {
-				  timeDisplay = departure.expected_departure;
-				}
+          if (departureFormat === "1") {
+            timeDisplay = departure.planned_departure;
 
-				if (departure.cancelled) {
-				  timeDisplay += ` <span class="cancelled">Entfällt</span>`;
-				}
-			  }
+            if (departure.cancelled) {
+              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
+            } else if (departure.delay > 0) {
+              timeDisplay += ` <span class="delay">+${departure.delay}</span> (${departure.expected_departure})`;
+            }
 
-			  html += `<td class="time">${timeDisplay}</td>`;
-			  html += `</tr>`;
-			});
-		}
+          } else if (departureFormat === "2") {
+            timeDisplay = departure.planned_departure;
 
-		html += `</table></div>`; 
-		this.content.innerHTML = html;
-	}
+            if (departure.cancelled) {
+              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
+            } else if (departure.delay > 0) {
+              timeDisplay += ` <span class="delay">+${departure.delay}</span>`;
+            }
+
+          } else if (departureFormat === "3") {
+            if (departure.delay > 0) {
+              timeDisplay = `<span class="delay">${departure.expected_departure}</span>`;
+            } else {
+              timeDisplay = departure.expected_departure;
+            }
+
+            if (departure.cancelled) {
+              timeDisplay += ` <span class="cancelled">Entfällt</span>`;
+            }
+          }
+
+          html += `<td class="time">${timeDisplay}</td>`;
+          html += `</tr>`;
+        });
+      }
+
+      html += `</table></div>`;
+      this.content.innerHTML = html;
+    }
   }
 
   // The user supplied configuration. Throw an exception and Home Assistant
@@ -257,4 +243,4 @@ class ContentAnotherMVG extends HTMLElement {
   }
 }
 
-customElements.define("content-card-another-mvg", ContentAnotherMVG);
+customElements.define("content-card-another-mvg-minimal", ContentAnotherMVG);
