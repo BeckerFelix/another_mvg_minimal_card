@@ -25,19 +25,21 @@ class ContentAnotherMVG extends HTMLElement {
         /* Column widths and spacing */
         .label {
           width: 10%;
-          padding: 0 6px;
+          padding: 5px 15px 5px 12px;
           color: #000000;
         }
         .destination {
           width: 70%;
           text-wrap: wrap;
+          padding: 5px 15px 5px 12px;
           color: #000000;
         }
         .time {
-          padding-right: 5px;
+          padding: 5px 15px 5px 12px;
           width: fit-content;
           white-space: nowrap;
           color: #000000;
+          text-align: right;
         }
 
         .cancelled {
